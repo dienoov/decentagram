@@ -1,3 +1,14 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@font-face {
+    font-family: "DEFAULT";
+    src: url("fonts/DEFAULT.woff");
+    font-display: swap;
+}
+
+body {
+    font-family: "DEFAULT", sans-serif;
+    @apply text-slate-50 bg-zinc-900;
+}
