@@ -2,6 +2,7 @@ import {Component, Fragment} from 'react';
 import Web3 from 'web3/dist/web3.min';
 import Decentagram from './../abis/Decentagram.json';
 import Navbar from './Navbar';
+import Upload from './Upload';
 
 class App extends Component {
     constructor(props) {
@@ -34,7 +35,7 @@ class App extends Component {
         const web3 = window.web3;
 
         const accounts = await web3.eth.getAccounts();
-        this.setState({accounts: accounts[0]});
+        this.setState({account: accounts[0]});
 
         const networkId = await web3.eth.net.getId();
         const networkData = Decentagram.networks[networkId];
@@ -53,9 +54,12 @@ class App extends Component {
     render() {
         return (
             <Fragment>
-                <header>
+                <header className="bg-neutral-900 sticky top-0 w-full">
                     <Navbar/>
                 </header>
+                <main className="max-w-4xl mx-auto pt-2">
+                    <Upload decentagram={this.state.decentagram} account={this.state.account}/>
+                </main>
             </Fragment>
         );
     }
