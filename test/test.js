@@ -57,5 +57,40 @@ contract('Decentagram', ([deployer, author, tipper]) => {
             assert.equal(image.tipAmount, '0', 'tip amount is correct');
             assert.equal(image.author, author, 'author is correct');
         });
+
+        it('should allow users to tip images', async () => {
+            let oldAuthorBalance;
+            oldAuthorBalance = await web3.eth.getBalance(author);
+            oldAuthorBalance = new web3.utils.BN(oldAuthorBalance);
+
+            result = await decentagram.tipImageOwner(imageCount, {
+                from: tipper,
+                value: web3.utils.toWei('1', 'ether'),
+            });
+
+            const event = result.logs[0].args;
+            assert.equal(event.id.toNumber(), imageCount.toNumber(), 'id is correct');
+            assert.equal(event.hash, hash, 'hash is correct');
+            assert.equal(event.description, 'Image Description', 'description is correct');
+            assert.equal(event.tipAmount, '1000000000000000000', 'tip amount is correct');
+            assert.equal(event.author, author, 'author is correct');
+
+            let newAuthorBalance;
+            newAuthorBalance = await web3.eth.getBalance(author);
+            newAuthorBalance = new web3.utils.BN(newAuthorBalance);
+
+            let tipImageOwner;
+            tipImageOwner = web3.utils.toWei('1', 'ether');
+            tipImageOwner = new web3.utils.BN(tipImageOwner);
+
+            const expectedBalance = oldAuthorBalance.add(tipImageOwner);
+
+            assert.equal(newAuthorBalance.toString(), expectedBalance.toString());
+
+            await decentagram.tipImageOwner(99, {
+                from: tipper,
+                value: web3.utils.toWei('1', 'ether'),
+            }).should.be.rejected;
+        });
     });
 });
