@@ -3,6 +3,7 @@ import Web3 from 'web3/dist/web3.min';
 import Decentagram from './../abis/Decentagram.json';
 import Navbar from './Navbar';
 import Upload from './Upload';
+import Images from './Images';
 
 class App extends Component {
     constructor(props) {
@@ -12,6 +13,7 @@ class App extends Component {
             decentagram: null,
             images: [],
             imageCount: 0,
+            loading: true,
         };
     }
 
@@ -40,25 +42,39 @@ class App extends Component {
         const networkId = await web3.eth.net.getId();
         const networkData = Decentagram.networks[networkId];
 
-        if (networkData) {
-            const decentagram = new web3.eth.Contract(Decentagram.abi, networkData.address);
-            this.setState({decentagram});
-
-            const imageCount = await decentagram.methods.imageCount().call();
-            this.setState({imageCount});
-        } else {
+        if (!networkData) {
             window.alert('Decentagram contract not deployed to detected network.');
+            return;
         }
+
+        const decentagram = new web3.eth.Contract(Decentagram.abi, networkData.address);
+        this.setState({decentagram});
+
+        const imageCount = await decentagram.methods.imageCount().call();
+        this.setState({imageCount});
+
+        for (let i = 1; i <= imageCount; i++) {
+            const image = await decentagram.methods.images(i).call();
+            this.setState({
+                images: [...this.state.images, image],
+            });
+        }
+
+        this.setState({loading: false});
     }
 
     render() {
+        const main = this.state.loading ? <p>loading</p> : <Images images={this.state.images}/>;
         return (
             <Fragment>
                 <header className="bg-neutral-900 sticky top-0 w-full">
-                    <Navbar/>
+                    <Navbar account={this.state.account}/>
                 </header>
-                <main className="max-w-4xl mx-auto pt-2">
-                    <Upload decentagram={this.state.decentagram} account={this.state.account}/>
+                <main className="max-w-4xl mx-auto pt-2 flex flex-col lg:flex-row-reverse">
+                    <aside className="lg:mx-auto">
+                        <Upload decentagram={this.state.decentagram} account={this.state.account}/>
+                    </aside>
+                    {main}
                 </main>
             </Fragment>
         );

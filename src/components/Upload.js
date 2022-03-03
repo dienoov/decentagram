@@ -17,7 +17,6 @@ class Upload extends Component {
 
         reader.onloadend = () => {
             this.setState({buffer: Buffer(reader.result)});
-            console.log('buffer', this.state.buffer);
         };
     }
 
@@ -33,11 +32,10 @@ class Upload extends Component {
 
     render() {
         return (
-            <form onSubmit={this.uploadImage.bind(this)} className="flex flex-col max-w-sm p-4">
+            <form onSubmit={this.uploadImage.bind(this)} className="flex flex-col w-full lg:max-w-sm px-4 py-2 static lg:sticky lg:top-20">
                 <input type="file" accept="image/jpeg, image/png" onChange={this.captureFile.bind(this)}
                        className="file:mr-4 file:py-2 file:px-4 mb-3
-                        file:rounded file:border-0
-                        file:text-sm file:font-semibold
+                        file:rounded file:border-0 file:text-sm
                         file:bg-zinc-800 file:text-slate-50
                         hover:file:bg-zinc-700"
                 />
