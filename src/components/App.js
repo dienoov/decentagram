@@ -74,7 +74,8 @@ class App extends Component {
                     <aside>
                         <Upload decentagram={this.state.decentagram} account={this.state.account}/>
                     </aside>
-                    {this.state.loading ? <ImagesSkeleton/> : <Images decentagram={this.state.decentagram}/>}
+                    {this.state.loading ? <ImagesSkeleton/> :
+                        <Images decentagram={this.state.decentagram} account={this.state.account}/>}
                 </main>
             </Fragment>
         );

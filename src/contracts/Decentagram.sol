@@ -49,7 +49,9 @@ contract Decentagram {
         address payable _author = _image.author;
 
         address(_author).transfer(msg.value);
+
         _image.tipAmount += msg.value;
+        images[_id] = _image;
 
         emit ImageTipped(_id, _image.hash, _image.description, _image.tipAmount, _author);
     }
