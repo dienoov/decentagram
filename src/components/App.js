@@ -4,6 +4,7 @@ import Decentagram from './../abis/Decentagram.json';
 import Navbar from './Navbar';
 import Upload from './Upload';
 import Images from './Images';
+import ImagesSkeleton from './ImagesSkeleton';
 
 class App extends Component {
     constructor(props) {
@@ -64,17 +65,16 @@ class App extends Component {
     }
 
     render() {
-        const main = this.state.loading ? <p>loading</p> : <Images images={this.state.images}/>;
         return (
             <Fragment>
-                <header className="bg-neutral-900 sticky top-0 w-full">
+                <header className="bg-neutral-900 sticky top-0 w-full z-10">
                     <Navbar account={this.state.account}/>
                 </header>
                 <main className="max-w-4xl mx-auto pt-2 flex flex-col lg:flex-row-reverse">
-                    <aside className="lg:mx-auto">
+                    <aside>
                         <Upload decentagram={this.state.decentagram} account={this.state.account}/>
                     </aside>
-                    {main}
+                    {this.state.loading ? <ImagesSkeleton/> : <Images decentagram={this.state.decentagram}/>}
                 </main>
             </Fragment>
         );
